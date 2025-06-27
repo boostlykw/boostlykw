@@ -1,0 +1,22 @@
+/* style.css - النسخة الجديدة بهوية التصميم البنفسجية */
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+body { font-family: 'Tajawal', sans-serif; background-color: #1a143d; background-image: linear-gradient(180deg, #2c215d 0%, #1a143d 100%); color: #f0f0f0; margin: 0; padding: 20px; text-align: center; min-height: 100vh; }
+header { margin-bottom: 40px; }
+header h1 { color: #ffffff; font-weight: 900; font-size: 2.5em; text-shadow: 0 0 10px rgba(199, 164, 255, 0.4); }
+header p { color: #c7a4ff; font-size: 1.2em; }
+.packages-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; }
+.package { background-color: rgba(0, 0, 0, 0.2); border: 1px solid #9f50ff; border-radius: 15px; padding: 25px; width: 300px; box-shadow: 0 0 20px rgba(159, 80, 255, 0.25); transition: transform 0.3s, box-shadow 0.3s; display: flex; flex-direction: column; }
+.package:hover { transform: translateY(-10px); box-shadow: 0 0 30px rgba(159, 80, 255, 0.5); }
+.package h2 { color: #ffffff; margin-top: 5px; font-weight: 700; }
+.package .price { font-size: 28px; font-weight: 900; color: #39ff14; margin: 10px 0; text-shadow: 0 0 8px rgba(57, 255, 20, 0.6); }
+.package .features { list-style: none; padding: 0; margin: 20px 0; text-align: right; flex-grow: 1; }
+.package .features li { padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); font-size: 1.1em; }
+.package .features li::before { content: '✓'; color: #39ff14; margin-left: 10px; }
+.buy-button { background-color: #9f50ff; color: white; border: none; padding: 15px 25px; border-radius: 10px; font-size: 18px; font-family: 'Tajawal', sans-serif; font-weight: 700; cursor: pointer; transition: background-color 0.3s, transform 0.2s; margin-top: auto; }
+.buy-button:hover { background-color: #b374ff; transform: scale(1.05); }
+.package-icon { font-size: 50px; margin-bottom: 15px; color: #c7a4ff; text-shadow: 0 0 15px rgba(199, 164, 255, 0.5); }
+footer { margin-top: 50px; color: rgba(255, 255, 255, 0.6); }
+footer a { color: #c7a4ff; text-decoration: none; }
+footer a:hover { color: #ffffff; text-decoration: underline; }
+.store-logo { max-height: 100px; margin-bottom: 15px; }
+.snapchat-icon { color: #FFFC00; -webkit-text-stroke: 1px #a9a600; text-stroke: 1px #a9a600; }
