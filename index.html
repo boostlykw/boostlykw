@@ -1,1085 +1,736 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="description" content="BOOSTTLY: أفضل خدمات السوشيال ميديا المتكاملة في الكويت. زيادة متابعين انستغرام وتيك توك وسناب شات، مشاهدات، لايكات، وتفاعل من حسابات عربية وخليجية حقيقية. عزز تواجدك الرقمي معنا في الكويت.">
-    <meta name="keywords" content="BOOSTTLY, خدمات سوشيال ميديا, زيادة متابعين, متابعين انستغرام, متابعين تيك توك, متابعين سناب شات, مشاهدات, لايكات, تفاعل, SMM, تسويق رقمي, الكويت, كويتي, الخليج, حسابات عربية, حسابات خليجية, مقالات تسويق, نصائح سوشيال ميديا, آراء العملاء, تقييمات سوشيال ميديا, أفضل خدمات SMM, ثقة, سرعة, سعر, يوتيوب, تويتر, X">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOOSTTLY - الأفضل في الكويت لخدمات السوشيال ميديا والتفاعل</title>
-    <link rel="canonical" href="https://boostlykw.github.io/boostlykw/"> 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+import React, { useState, useEffect, createContext, useContext, forwardRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, Star, Users, Zap, Menu, X, Shield, Clock, Headphones as HeadphonesIcon, CreditCard, Instagram, Facebook, Youtube, Twitter, MessageCircle, Quote, Mail, Phone, MapPin, ShoppingCart, Globe, CheckCircle, Gift } from 'lucide-react';
+import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+import * as ToastPrimitives from '@radix-ui/react-toast';
+import { cva } from 'class-variance-authority';
+import * as TabsPrimitive from "@radix-ui/react-tabs";
 
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      "name": "BOOSTTLY",
-      "image": "https://boostlykw.github.io/boostlykw/LOGO_BOOSTTLY.PNG", "url": "https://boostlykw.github.io/boostlykw/", "telephone": "+96598983566",
-      "priceRange": "KD5 - KD300",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "الكويت",
-        "addressCountry": "KW"
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "reviewCount": "262"
-      },
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": "خدمات السوشيال ميديا و زيادة المتابعين",
-        "itemListElement": [
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "باقات انستغرام"}},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "باقات تيك توك"}},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "باقات يوتيوب"}},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "باقات منصة X (تويتر)"}},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "باقات سناب شات"}},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "باقات سوشيال ميديا أخرى"}}
-        ]
-      },
-      "sameAs": [
-        "https://www.instagram.com/boostly_kw/?utm_source=ig_web_button_share_sheet", 
-        "https://www.tiktok.com/@boostly_kw?_t=ZS-8xXvkGcSE1B&_r=1", 
-        "https://snapchat.com/t/Q9jmGZ7A"
-      ]
+// Helper: cn (for merging Tailwind classes)
+function cn(...inputs) {
+	return twMerge(clsx(inputs));
+}
+
+// Helper: Smooth Scroll
+const handleScroll = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-    </script>
-    <style>
-        /* تعريف المتغيرات للألوان بناءً على لوحة الألوان */
-        :root {
-            --primary-color: #e462a2; /* وردي فاتح (للعناصر النشطة والبارزة) */
-            --secondary-color: #f69980; /* برتقالي فاتح (يمكن استخدامه للعناصر الثانوية) */
-            --bg-dark: #170e39; /* بنفسجي غامق جداً (لون الخلفية الرئيسي) */
-            --bg-darker: #120b29; /* درجة أغمق للخلفية للعناصر الداخلية */
-            --text-light: #ffffff; /* أبيض (لون جميع النصوص) */
-            --accent-purple: #8851a5; /* بنفسجي داكن (للتأكيد، مثل الشرائط تحت العناوين) */
-            --rating-star-color: #FFD600; /* لون ذهبي للنجوم */
-        }
+};
 
-        /* الخطوط الأساسية وتطبيق الألوان العامة */
-        body {
-            font-family: 'Cairo', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            line-height: 1.6;
-            overflow-x: hidden; /* لمنع ظهور شريط التمرير الأفقي بسبب الشريط المتحرك */
-        }
+// --- Custom Icons ---
 
-        /* تنسيق الهيدر (رأس الصفحة) */
-        header {
-            background-color: var(--bg-darker);
-            color: var(--primary-color);
-            padding: 1rem 0;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+const SnapchatIcon = ({ className }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M19.2 2.8C18.4 2.3 17.5 2 16.5 2c-1.2 0-2.4.4-3.3 1.2-.5-.3-1-.6-1.6-.8-.5-.2-1.1-.3-1.6-.3-2.5 0-4.6 2.1-4.6 4.6 0 1.2.5 2.4 1.3 3.2-.2.1-.5.1-.7.1-1.1 0-2.1-.4-2.8-1.2-.4.6-.6 1.3-.6 2.1 0 2.2 1.8 4 4 4h.5c.3 0 .5-.1.7-.2.2.1.4.2.7.2.5 0 1-.1 1.4-.4.5.3 1.1.5 1.8.5 2.2 0 4-1.8 4-4 0-1-.4-1.9-1.1-2.6.8-.7 1.3-1.8 1.3-2.9 0-1.4-.8-2.6-1.9-3.4z"></path>
+    </svg>
+);
 
-        /* تنسيق قسم الشعار - تم إضافة ارتفاع محدد هنا */
-        .logo-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-        }
+const TikTokIcon = ({ className }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.65 4.24 1.76v3.45c-1.94-.02-3.84-.68-5.31-1.9-1.49-1.23-2.36-2.99-2.59-4.88-.01-.02-.02-.04-.03-.06v.02c.01 2.22-.67 4.38-1.96 6.04-1.29 1.65-3.11 2.68-5.07 2.95v-3.44c1.54-.3 2.94-1.16 3.9-2.34 1.02-1.26 1.58-2.85 1.58-4.54V.02z"></path>
+    </svg>
+);
 
-        .logo-container img {
-            max-height: 80px;
-            width: auto;
-            border-radius: 50%;
-            border: 2px solid var(--primary-color);
-            display: block; 
-            object-fit: contain; 
-            min-width: 50px; 
-            min-height: 50px; 
-            background-color: #444; 
-            box-sizing: border-box; 
-            padding: 5px; 
-        }
+const WhatsappIcon = ({ className }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91s-4.45-9.91-9.91-9.91zM17.52 14.38c-.28-.14-1.67-.82-1.93-.91-.26-.1-.45-.14-.64.14-.19.28-.73.91-.89 1.1-.16.19-.32.21-.6.07-.28-.14-1.18-.44-2.25-1.39- .84-.74-1.4-1.65-1.56-1.93-.16-.28-.02-.43.12-.57.13-.13.28-.32.42-.48.14-.16.19-.28.28-.47.1-.19.05-.37-.02-.51s-.64-1.54-.87-2.1c-.24-.56-.48-.48-.64-.49-.15-.01-.32-.01-.48-.01-.16 0-.43.07-.64.35-.22.28-.86.84-.86 2.07 0 1.22.88 2.4 1 2.56.12.16 1.73 2.63 4.2 3.7.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.67-.68 1.9-.91.24-.23.24-.43.16-.57l-.07-.12z"></path>
+    </svg>
+);
 
-        .logo-container h1 {
-            margin: 0;
-            font-size: 3rem;
-            color: var(--text-light);
-            letter-spacing: 2px;
-            text-shadow: 1px 1px 6px #000, 0 2px 16px rgba(228, 98, 162, 0.4);
-        }
-
-        /* تنسيق التنقل (القائمة العلوية) */
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        nav ul li a {
-            color: var(--text-light);
-            text-decoration: none;
-            font-weight: bold;
-            padding: 0.5rem 1rem;
-            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
-            border-radius: 5px;
-            border: 1px solid transparent;
-        }
-
-        nav ul li a:hover {
-            background: var(--primary-color);
-            color: var(--bg-dark);
-            transform: translateY(-3px);
-        }
-
-        /* الشريط المتحرك */
-        .scrolling-banner {
-            background-color: var(--secondary-color);
-            color: var(--bg-dark);
-            padding: 0.5rem 0;
-            white-space: nowrap;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        .scrolling-banner span {
-            display: inline-block;
-            padding-left: 100%;
-            animation: scroll-text 20s linear infinite;
-        }
-
-        @keyframes scroll-text {
-            0% { transform: translateX(0%); }
-            100% { transform: translateX(-100%); }
-        }
-
-        /* تنسيق قسم البطل / التعريفي (لماذا نحن الأفضل) */
-        .hero-section {
-            background-color: var(--accent-purple);
-            padding: 3rem 1rem;
-            text-align: center;
-            color: var(--text-light);
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            border-bottom-left-radius: 14px;
-            border-bottom-right-radius: 14px;
-        }
-
-        .hero-section h2 {
-            font-size: 2.5rem;
-            color: var(--text-light);
-            margin-top: 0;
-            margin-bottom: 1.5rem;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-        }
-
-        .hero-section .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .hero-section .feature-item {
-            background-color: rgba(0,0,0,0.2);
-            padding: 1rem;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: var(--text-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: transform 0.3s ease, background-color 0.3s ease;
-        }
-        
-        .hero-section .feature-item:hover {
-            transform: translateY(-5px) scale(1.05);
-            background-color: rgba(255,255,255,0.1);
-        }
-
-        .hero-section .feature-item i {
-            color: var(--primary-color);
-            font-size: 1.5rem;
-            transition: transform 0.3s ease;
-        }
-        .hero-section .feature-item:hover i {
-            transform: rotate(5deg) scale(1.1);
-        }
-
-
-        /* تنسيق الأقسام الرئيسية */
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        section {
-            background-color: var(--bg-darker);
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border-radius: 14px;
-            box-shadow: 0 4px 18px rgba(18,15,45,0.15);
-            border: 1px solid var(--accent-purple);
-        }
-
-        section h2 {
-            color: var(--primary-color);
-            text-align: center;
-            margin-bottom: 2rem;
-            font-size: 2rem;
-            text-shadow: 0 1px 4px rgba(228, 98, 162, 0.6);
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        /* الشريط البنفسجي تحت العناوين H2 */
-        section h2::after {
-            content: '';
-            display: block;
-            width: 80px;
-            height: 4px;
-            background-color: var(--accent-purple);
-            margin: 10px auto 0;
-            border-radius: 2px;
-        }
-
-        /* تنسيق باقات الخدمات */
-        .packages-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 2rem;
-        }
-
-        /* تنسيق عناوين المنصات داخل قسم الباقات */
-        .platform-category-title {
-            color: var(--secondary-color);
-            font-size: 1.8rem;
-            text-align: center;
-            width: 100%; /* ليأخذ عرض الشبكة الكامل */
-            margin-top: 2.5rem;
-            margin-bottom: 1.5rem;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-            position: relative;
-            padding-bottom: 10px;
-            /* لضمان أن العنوان يظهر في سطر جديد في الشبكة */
-            grid-column: 1 / -1; 
-        }
-        .platform-category-title::after {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 3px;
-            background-color: var(--secondary-color);
-            margin: 8px auto 0;
-            border-radius: 2px;
-        }
-
-
-        .package-card {
-            background-color: var(--bg-dark);
-            border: 1px solid var(--accent-purple);
-            border-radius: 10px;
-            padding: 1.5rem;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(18,15,45,0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .package-card:hover {
-            transform: translateY(-6px) scale(1.01);
-            box-shadow: 0 12px 28px rgba(228, 98, 162, 0.22);
-            border-color: var(--primary-color);
-        }
-
-        .package-card img {
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 1rem;
-            border-radius: 8px;
-            object-fit: contain;
-            max-height: 200px;
-        }
-
-        .package-card h3 {
-            color: var(--primary-color);
-            font-size: 1.5rem;
-            margin: 0 0 0.5rem;
-        }
-
-        .package-card ul {
-            list-style: none;
-            padding: 0;
-            margin-bottom: 1rem;
-            text-align: right;
-            width: 100%;
-        }
-
-        .package-card ul li {
-            margin-bottom: 0.3rem;
-            color: var(--text-light);
-            position: relative;
-            padding-right: 25px;
-        }
-
-        .package-card ul li::before {
-            content: '✓';
-            color: var(--primary-color);
-            font-weight: bold;
-            position: absolute;
-            right: 0;
-        }
-
-        .package-card .price {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            text-shadow: 0 1px 6px rgba(0,0,0,0.25);
-        }
-
-        /* زر اطلب عبر واتساب */
-        .whatsapp-button {
-            display: inline-block;
-            background-color: var(--primary-color);
-            color: var(--bg-dark);
-            padding: 0.7rem 1.3rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
-            font-size: 1rem;
-            box-shadow: 0 2px 8px rgba(228, 98, 162, 0.2);
-            margin-top: 0.5rem;
-        }
-
-        .whatsapp-button:hover {
-            background: var(--bg-darker);
-            color: var(--primary-color);
-            box-shadow: 0 4px 12px rgba(228, 98, 162, 0.4);
-            transform: translateY(-3px);
-        }
-
-        /* تنسيق قسم المقالات */
-        .articles-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 2rem;
-        }
-
-        .article-card {
-            background-color: var(--bg-dark);
-            border: 1px solid var(--accent-purple);
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(18,15,45,0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            text-align: right;
-        }
-
-        .article-card:hover {
-            transform: translateY(-6px) scale(1.01);
-            box-shadow: 0 12px 28px rgba(228, 98, 162, 0.22);
-            border-color: var(--primary-color);
-        }
-
-        .article-card h3 {
-            color: var(--primary-color);
-            font-size: 1.4rem;
-            margin-top: 0;
-            margin-bottom: 0.8rem;
-        }
-
-        .article-card p {
-            font-size: 0.95rem;
-            color: var(--text-light);
-            margin-bottom: 1rem;
-        }
-
-        .article-card .read-more-link {
-            display: inline-block;
-            color: var(--secondary-color);
-            text-decoration: none;
-            font-weight: bold;
-            transition: color 0.3s ease;
-        }
-
-        .article-card .read-more-link:hover {
-            color: var(--primary-color);
-        }
-
-        /* تنسيق قسم آراء العملاء */
-        .testimonials-header {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 30px;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .review-platform {
-            background-color: var(--bg-dark);
-            border: 1px solid var(--accent-purple);
-            border-radius: 8px;
-            padding: 1rem 1.5rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 0 2px 8px rgba(18,15,45,0.2);
-            color: var(--text-light);
-            font-size: 1rem;
-            min-width: 200px;
-        }
-
-        .review-platform img {
-            max-height: 40px;
-            margin-bottom: 0.5rem;
-        }
-
-        .review-platform .rating {
-            font-weight: bold;
-            color: var(--primary-color);
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .review-platform .rating .stars {
-            color: var(--rating-star-color);
-            font-size: 1rem;
-            margin-right: 5px;
-        }
-
-        .review-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin-top: 2rem;
-        }
-
-        .testimonial-card {
-            background-color: var(--bg-dark);
-            border: 1px solid var(--accent-purple);
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(18,15,45,0.2);
-            text-align: right;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .testimonial-card .review-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 1rem;
-            direction: ltr;
-            justify-content: flex-end;
-        }
-        
-        .testimonial-card .review-header .user-info {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            flex-grow: 1;
-        }
-
-        .testimonial-card .review-header .user-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: var(--accent-purple);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: var(--text-light);
-            font-size: 1.5rem;
-            overflow: hidden;
-        }
-        .testimonial-card .review-header .user-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-
-
-        .testimonial-card .review-header .user-name {
-            font-weight: bold;
-            color: var(--primary-color);
-            font-size: 1.1rem;
-        }
-
-        .testimonial-card .review-header .stars {
-            color: var(--rating-star-color);
-            font-size: 0.9rem;
-        }
-
-        .testimonial-card .review-text {
-            font-size: 0.95rem;
-            color: var(--text-light);
-            margin-bottom: 1rem;
-            text-align: right;
-            flex-grow: 1;
-        }
-        .testimonial-card .platform-info {
-            font-size: 0.85rem;
-            color: var(--secondary-color);
-            text-align: left;
-            margin-top: 10px;
-        }
-        .testimonial-card .platform-info i {
-            margin-left: 5px;
-            color: var(--text-light);
-        }
-
-
-        /* زر الواتساب الثابت العائم */
-        .floating-whatsapp {
-            position: fixed;
-            bottom: 25px;
-            left: 25px;
-            background: var(--primary-color);
-            color: var(--bg-dark);
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2rem;
-            box-shadow: 0 4px 16px rgba(228, 98, 162, 0.2);
-            z-index: 1000;
-            text-decoration: none;
-            transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
-        }
-
-        .floating-whatsapp:hover {
-            transform: scale(1.1) rotate(-4deg);
-            background: var(--accent-purple);
-            color: var(--primary-color);
-            box-shadow: 0 6px 20px rgba(228, 98, 162, 0.5);
-        }
-
-        /* تنسيق الفوتر (تذييل الصفحة) */
-        footer {
-            background-color: var(--bg-darker);
-            color: var(--text-light);
-            text-align: center;
-            padding: 1.5rem 0;
-            margin-top: 2rem;
-            font-weight: bold;
-            border-top: 1px solid var(--accent-purple);
-        }
-        
-        .social-icons {
-            margin-top: 1rem;
-        }
-
-        .social-icons a {
-            color: var(--text-light);
-            font-size: 1.5rem;
-            margin: 0 10px;
-            transition: color 0.3s ease, transform 0.2s ease;
-        }
-
-        .social-icons a:hover {
-            color: var(--primary-color);
-            transform: translateY(-3px) scale(1.1);
-        }
-
-
-        /* لجعله متجاوبًا (Responsive) */
-        @media (max-width: 768px) {
-            .logo-container { flex-direction: column; gap: 10px; }
-            .logo-container img { max-height: 60px; }
-            .logo-container h1 { font-size: 2.2rem; }
-            nav ul { flex-direction: column; gap: 10px; }
-            nav ul li a { padding: 0.5rem; }
-            .packages-grid, .articles-grid, .review-grid, .hero-section .features-grid { grid-template-columns: 1fr; }
-            .container { margin: 1rem auto; }
-            section { padding: 1.5rem; }
-            .floating-whatsapp { width: 50px; height: 50px; font-size: 1.8rem; bottom: 15px; left: 15px; }
-            .testimonials-header { flex-direction: column; gap: 15px; }
-            .hero-section h2 { font-size: 2rem; }
-            .hero-section .feature-item { font-size: 1rem; padding: 0.8rem; }
-            .platform-category-title { font-size: 1.5rem; }
-            .scrolling-banner span { animation: scroll-text-mobile 15s linear infinite; } /* حركة أسرع للموبايل */
-            @keyframes scroll-text-mobile {
-                0% { transform: translateX(0%); }
-                100% { transform: translateX(-100%); }
-            }
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <div class="logo-container">
-            <img src="/boostlykw/LOGO_BOOSTTLY.PNG" alt="شعار BOOSTTLY الرسمي لخدمات التسويق الرقمي في الكويت"> <h1>BOOSTTLY</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="#instagram-packages-section">باقات انستغرام</a></li>
-                <li><a href="#tiktok-packages-section">باقات تيك توك</a></li>
-                <li><a href="#youtube-packages-section">باقات يوتيوب</a></li>
-                <li><a href="#x-packages-section">باقات X (تويتر)</a></li>
-                <li><a href="#snapchat-packages-section">باقات سناب شات</a></li>
-                <li><a href="#articles">مقالاتنا</a></li>
-                <li><a href="#testimonials">آراء العملاء</a></li>
-                <li><a href="#about-us">من نحن</a></li>
-                <li><a href="#contact-us">تواصل معنا</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <div class="scrolling-banner">
-        <span>✅ BOOSTTLY: ثقة، سرعة، سعر لا يضاهى في الكويت! ✅ حسابات عربية متفاعلة فقط! ✅ دعم 24/7 ✅</span>
+// --- 3D Icon Wrapper ---
+const Icon3D = ({ children, color }) => (
+    <div className="icon-3d-wrapper" style={{ '--icon-color': color }}>
+        {children}
     </div>
+);
 
-    <section class="hero-section">
-        <h2>لماذا BOOSTTLY هي خيارك الأفضل في الكويت؟</h2>
-        <div class="features-grid">
-            <div class="feature-item">
-                <i class="fas fa-handshake"></i>
-                <span>ثقة لا تُضاهى</span>
-            </div>
-            <div class="feature-item">
-                <i class="fas fa-tachometer-alt"></i>
-                <span>سرعة استثنائية</span>
-            </div>
-            <div class="feature-item">
-                <i class="fas fa-tags"></i>
-                <span>أفضل الأسعار</span>
-            </div>
-            <div class="feature-item">
-                <i class="fas fa-users"></i>
-                <span>حسابات عربية متفاعلة</span>
-            </div>
+
+// --- UI Components (Toast, Button, Tabs) ---
+
+// Toast Logic (use-toast.js)
+const TOAST_LIMIT = 1;
+let count = 0;
+function generateId() {
+  count = (count + 1) % Number.MAX_VALUE;
+  return count.toString();
+}
+const toastStore = {
+  state: { toasts: [] },
+  listeners: [],
+  getState: () => toastStore.state,
+  setState: (nextState) => {
+    toastStore.state = typeof nextState === 'function' ? nextState(toastStore.state) : { ...toastStore.state, ...nextState };
+    toastStore.listeners.forEach(listener => listener(toastStore.state));
+  },
+  subscribe: (listener) => {
+    toastStore.listeners.push(listener);
+    return () => {
+      toastStore.listeners = toastStore.listeners.filter(l => l !== listener);
+    };
+  }
+};
+const toast = ({ ...props }) => {
+  const id = generateId();
+  const update = (props) => toastStore.setState((state) => ({ ...state, toasts: state.toasts.map((t) => t.id === id ? { ...t, ...props } : t) }));
+  const dismiss = () => toastStore.setState((state) => ({ ...state, toasts: state.toasts.filter((t) => t.id !== id) }));
+  toastStore.setState((state) => ({ ...state, toasts: [{ ...props, id, dismiss }, ...state.toasts].slice(0, TOAST_LIMIT) }));
+  return { id, dismiss, update };
+};
+function useToast() {
+  const [state, setState] = useState(toastStore.getState());
+  useEffect(() => {
+    const unsubscribe = toastStore.subscribe(setState);
+    return unsubscribe;
+  }, []);
+  useEffect(() => {
+    const timeouts = state.toasts.map((t) => {
+      if (t.duration === Infinity) return null;
+      return setTimeout(() => t.dismiss(), t.duration || 5000);
+    }).filter(Boolean);
+    return () => timeouts.forEach(clearTimeout);
+  }, [state.toasts]);
+  return { toast, toasts: state.toasts };
+}
+
+// Toast Components (toast.jsx)
+const ToastProvider = ToastPrimitives.Provider;
+const ToastViewport = forwardRef(({ className, ...props }, ref) => (
+	<ToastPrimitives.Viewport ref={ref} className={cn('fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]', className)} {...props} />
+));
+ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
+const toastVariants = cva('data-[swipe=move]:transition-none group relative pointer-events-auto flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border p-6 pr-8 shadow-lg transition-all data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=open]:slide-in-from-top-full data-[state=open]:sm:slide-in-from-bottom-full data-[state=closed]:slide-out-to-right-full', {
+	variants: { variant: { default: 'bg-background border', destructive: 'group destructive border-destructive bg-destructive text-destructive-foreground'}},
+	defaultVariants: { variant: 'default' },
+});
+const Toast = forwardRef(({ className, variant, ...props }, ref) => (
+	<ToastPrimitives.Root ref={ref} className={cn(toastVariants({ variant }), className)} {...props} />
+));
+Toast.displayName = ToastPrimitives.Root.displayName;
+const ToastClose = forwardRef(({ className, ...props }, ref) => (
+	<ToastPrimitives.Close ref={ref} className={cn('absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100 group-[.destructive]:text-red-300 group-[.destructive]:hover:text-red-50 group-[.destructive]:focus:ring-red-400 group-[.destructive]:focus:ring-offset-red-600', className)} toast-close="" {...props}>
+		<X className="h-4 w-4" />
+	</ToastPrimitives.Close>
+));
+ToastClose.displayName = ToastPrimitives.Close.displayName;
+const ToastTitle = forwardRef(({ className, ...props }, ref) => (
+	<ToastPrimitives.Title ref={ref} className={cn('text-sm font-semibold', className)} {...props} />
+));
+ToastTitle.displayName = ToastPrimitives.Title.displayName;
+const ToastDescription = forwardRef(({ className, ...props }, ref) => (
+	<ToastPrimitives.Description ref={ref} className={cn('text-sm opacity-90', className)} {...props} />
+));
+ToastDescription.displayName = ToastPrimitives.Description.displayName;
+
+// Toaster Component (toaster.jsx)
+function Toaster() {
+	const { toasts } = useToast();
+	return (
+		<ToastProvider>
+			{toasts.map(({ id, title, description, action, dismiss, ...props }) => {
+				return (
+					<Toast key={id} {...props}>
+						<div className="grid gap-1">
+							{title && <ToastTitle>{title}</ToastTitle>}
+							{description && (
+								<ToastDescription>{description}</ToastDescription>
+							)}
+						</div>
+						{action}
+						<ToastClose />
+					</Toast>
+				);
+			})}
+			<ToastViewport />
+		</ToastProvider>
+	);
+}
+
+// Button Component (button.jsx)
+const buttonVariants = cva('inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50', {
+	variants: {
+		variant: {
+			default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+			destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+			outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+			secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+			ghost: 'hover:bg-accent hover:text-accent-foreground',
+			link: 'text-primary underline-offset-4 hover:underline',
+		},
+		size: { default: 'h-10 px-4 py-2', sm: 'h-9 rounded-md px-3', lg: 'h-11 rounded-md px-8', icon: 'h-10 w-10' },
+	},
+	defaultVariants: { variant: 'default', size: 'default' },
+});
+const Button = forwardRef(({ className, variant, size, asChild = false, ...props }, ref) => {
+	const Comp = asChild ? "div" : 'button';
+	return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
+});
+Button.displayName = 'Button';
+
+// Tabs Components (tabs.jsx)
+const Tabs = TabsPrimitive.Root;
+const TabsList = forwardRef(({ className, ...props }, ref) => (
+  <TabsPrimitive.List ref={ref} className={cn("inline-flex h-12 items-center justify-center rounded-lg bg-white/10 p-1 text-gray-300", className)} {...props} />
+));
+TabsList.displayName = TabsPrimitive.List.displayName;
+const TabsTrigger = forwardRef(({ className, ...props }, ref) => (
+  <TabsPrimitive.Trigger ref={ref} className={cn("inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-[#8851a5] data-[state=active]:text-white data-[state=active]:shadow-md", className)} {...props} />
+));
+TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
+const TabsContent = forwardRef(({ className, ...props }, ref) => (
+  <TabsPrimitive.Content ref={ref} className={cn("mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2", className)} {...props} />
+));
+TabsContent.displayName = TabsPrimitive.Content.displayName;
+
+// --- Page Components ---
+
+const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navItems = [
+      { name: 'الرئيسية', id: 'hero' }, 
+      { name: 'الباقات الأكثر طلباً', id: 'featured-packages' }, 
+      { name: 'جميع الباقات', id: 'pricing' }, 
+      { name: 'خدماتنا', id: 'services' }, 
+      { name: 'آراء العملاء', id: 'testimonials' }, 
+      { name: 'اتصل بنا', id: 'contact' }
+    ];
+
+  const handleLogin = () => {
+    toast({ title: "🚧 ميزة تسجيل الدخول قيد التطوير حالياً." });
+  };
+  
+  const handleMobileNavClick = (id) => {
+      handleScroll(id);
+      setIsMenuOpen(false);
+  }
+
+  return (
+    <motion.header 
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.8 }}
+      className="fixed top-0 w-full z-50 glass-effect"
+    >
+      <div className="container mx-auto px-4 py-3">
+        <div className="flex items-center justify-between">
+          <motion.div className="flex items-center" whileHover={{ scale: 1.05 }}>
+            <img src="https://storage.googleapis.com/hostinger-horizons-assets-prod/0c66925f-f5b2-40eb-b414-4ab75f1d1af6/c075c580cb355c5921e07d83b1d6d21e.png" alt="Boostly Logo" className="h-20" />
+          </motion.div>
+
+          <nav className="hidden md:flex items-center space-x-8 space-x-reverse">
+            {navItems.map((item) => (
+              <motion.button key={item.id} onClick={() => handleScroll(item.id)} className="text-white hover:text-[#e462a2] transition-colors duration-300 font-medium" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                {item.name}
+              </motion.button>
+            ))}
+          </nav>
+
+          <div className="hidden md:flex items-center space-x-4 space-x-reverse">
+            <Button variant="ghost" onClick={handleLogin} className="text-white hover:bg-white/20">تسجيل الدخول</Button>
+            <Button onClick={handleLogin} className="btn-primary">إنشاء حساب</Button>
+          </div>
+
+          <button className="md:hidden text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
         </div>
+
+        {isMenuOpen && (
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="md:hidden mt-4 pb-4">
+            <nav className="flex flex-col space-y-4">
+              {navItems.map((item) => (
+                <button key={item.id} onClick={() => handleMobileNavClick(item.id)} className="text-white hover:text-[#e462a2] transition-colors duration-300 text-right">
+                  {item.name}
+                </button>
+              ))}
+              <div className="flex flex-col space-y-2 pt-4">
+                <Button variant="ghost" onClick={handleLogin} className="text-white hover:bg-white/20">تسجيل الدخول</Button>
+                <Button onClick={handleLogin} className="btn-primary">إنشاء حساب</Button>
+              </div>
+            </nav>
+          </motion.div>
+        )}
+      </div>
+    </motion.header>
+  );
+};
+
+const Hero = () => {
+  return (
+    <section id="hero" className="pt-48 pb-32 px-4 overflow-hidden">
+      <div className="container mx-auto">
+        <div className="grid grid-cols-1 gap-12 items-center">
+          <motion.div initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="text-center">
+            <motion.h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }}>
+              <span className="gradient-text">Boostly</span>
+              <br />
+              <span className="text-white">الخدمة الأسرع والأكثر ثقة في الكويت</span>
+            </motion.h1>
+            <motion.p className="text-xl text-gray-200 mb-8 leading-relaxed max-w-3xl mx-auto" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.4 }}>
+             عزز تواجدك الرقمي مع Boostly! نقدم متابعين ولايكات ومشاهدات من حسابات عربية حقيقية لجميع المنصات. خدماتنا مصممة خصيصاً لتكون الأفضل في السوق الكويتي.
+            </motion.p>
+            <motion.div className="flex flex-col sm:flex-row gap-4 justify-center mb-8" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.6 }}>
+              <Button onClick={() => handleScroll('pricing')} className="btn-primary text-lg px-8 py-4">ابدأ الآن <ArrowLeft className="mr-2 h-5 w-5" /></Button>
+              <Button variant="outline" onClick={() => handleScroll('services')} className="btn-secondary text-lg px-8 py-4">شاهد الخدمات</Button>
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
     </section>
+  );
+};
 
-    <main class="container">
-        <section id="all-smm-packages">
-            <h2>باقات BOOSTTLY المتكاملة لخدمات SMM</h2>
-            <div class="packages-grid">
-                <h3 class="platform-category-title" id="instagram-packages-section">باقات انستغرام</h3>
-                
-                <div class="package-card">
-                    <img src="/boostlykw/1_20250627_185555_0000.PNG" alt="باقة انستغرام الاكسبلور من BOOSTTLY: 10 آلاف متابع، مشاهدة، لايكات عربية وخليجية، أفضل خدمات السوشيال ميديا في الكويت"> <h3>باقة الاكسبلور</h3>
-                    <ul>
-                        <li><p>10,000 متابع</p></li>
-                        <li><p>10,000 مشاهدة</p></li>
-                        <li><p>5,000 لايك</p></li>
-                        <li><p>حسابات عربية و خليجية</p></li>
-                    </ul>
-                    <div class="price">KD 15</div>
-                    <a href="https://wa.me/0096598983566?text=أود%20الاستفسار%20عن%20باقة%20انستغرام%20الاكسبلور" target="_blank" class="whatsapp-button">
-                        اطلب عبر واتساب
-                    </a>
-                </div>
+const FeaturedPackages = () => {
+    const featuredPackages = [
+        { platform: 'instagram', name: 'باقة الاكسبلور', price: '15 د.ك', image: 'https://storage.googleapis.com/hostinger-horizons-assets-prod/0c66925f-f5b2-40eb-b414-4ab75f1d1af6/1a2c39aa7df057af2eaf8925dba091f2.png' },
+        { platform: 'tiktok', name: 'باقة الاكسبلور', price: '10 د.ك', image: 'https://storage.googleapis.com/hostinger-horizons-assets-prod/0c66925f-f5b2-40eb-b414-4ab75f1d1af6/073aed0e2c2ad9c3155817e8630ee041.png' }
+    ];
 
-                <div class="package-card">
-                    <img src="/boostlykw/2_20250627_185555_0001.PNG" alt="باقة انستجرام من BOOSTTLY: 10 آلاف متابع عربي وخليجي في الكويت، لزيادة التفاعل">
-                    <h3>باقات انستجرام</h3>
-                    <ul>
-                        <li><p>10,000 متابع</p></li>
-                        <li><p>حسابات عربية و خليجية</p></li>
-                    </ul>
-                    <div class="price">KD 8</div>
-                    <a href="https://wa.me/0096598983566?text=أود%20الاستفسار%20عن%20باقة%2010%20آلاف%20متابع%20انستغرام" target="_blank" class="whatsapp-button">
-                        اطلب عبر واتساب
-                    </a>
-                </div>
+    const handlePlanSelect = (platform, planName, price) => {
+        const message = أهلاً Boostly،\n\nأود طلب الباقة التالية:\n- المنصة: *${platform}*\n- الباقة: *${planName}*\n- السعر: *${price}*\n\nالرجاء تأكيد الطلب.;
+        const encodedMessage = encodeURIComponent(message);
+        window.open(https://wa.me/96560930205?text=${encodedMessage}, '_blank');
+    };
 
-                <div class="package-card">
-                    <img src="/boostlykw/3_20250627_185555_0002.PNG" alt="باقة انستجرام من BOOSTTLY: 1,000 مشاهدة من حسابات عربية وخليجية، لتعزيز المحتوى">
-                    <h3>باقات انستجرام</h3>
-                    <ul>
-                        <li><p>1,000 مشاهدة</p></li>
-                        <li><p>حسابات عربية و خليجية</p></li>
-                    </ul>
-                    <div class="price">KD 5</div>
-                    <a href="https://wa.me/0096598983566?text=أود%20الاستفسار%20عن%20باقة%201000%20مشاهدة%20انستغرام" target="_blank" class="whatsapp-button">
-                        اطلب عبر واتساب
-                    </a>
-                </div>
+    const handleFreeTrial = (platform, planName) => {
+        const message = أهلاً Boostly،\n\nأرغب في الحصول على تجربة مجانية للباقة التالية:\n- المنصة: *${platform}*\n- الباقة: *${planName}*\n\nشكرًا لكم.;
+        const encodedMessage = encodeURIComponent(message);
+        window.open(https://wa.me/96560930205?text=${encodedMessage}, '_blank');
+    };
 
-                <h3 class="platform-category-title" id="tiktok-packages-section">باقات تيك توك</h3>
-
-                <div class="package-card">
-                    <img src="/boostlykw/4_20250627_185555_0003.PNG" alt="باقة تيك توك الاكسبلور من BOOSTTLY: 10 آلاف متابع، 100 ألف مشاهدة، 10 آلاف لايك وشير عربي وخليجية">
-                    <h3>باقة الاكسبلور</h3>
-                    <ul>
-                        <li><p>10,000 متابع</p></li>
-                        <li><p>100,000 مشاهدة</p></li>
-                        <li><p>10,000 لايك</p></li>
-                        <li><p>10,000 شير</p></li>
-                        <li><p>حسابات عربية و خليجية</p></li>
-                    </ul>
-                    <div class="price">KD 10</div>
-                    <a href="https://wa.me/0096598983566?text=أود%20الاستفسار%20عن%20باقة%20تيك%20توك%20الاكسبلور" target="_blank" class="whatsapp-button">
-                        اطلب عبر واتساب
-                    </a>
-                </div>
-
-                <div class="package-card">
-                    <img src="/boostlykw/5_20250627_185555_0004.PNG" alt="باقة تيك توك من BOOSTTLY: 10 آلاف متابع عربي وخليجي، أفضل عروض الكويت">
-                    <h3>باقات تيك توك</h3>
-                    <ul>
-                        <li><p>10,000 متابع</p></li>
-                        <li><p>حسابات عربية و خليجية</p></li>
-                    </ul>
-                    <div class="price">KD 7</div>
-                    <a href="https://wa.me/0096598983566?text=أود%20الاستفسار%20عن%20باقة%2010%20آلاف%20متابع%20تيك%20توك" target="_blank" class="whatsapp-button">
-                        اطلب عبر واتساب
-                    </a>
-                </div>
-
-                <div class="package-card">
-                    <img src="/boostlykw/6_20250627_185555_0005.PNG" alt="باقة تيك توك المشاهير من BOOSTTLY: 5 آلاف متابع، 20 ألف مشاهدة، 5 آلاف لايك من حسابات عربية وخليجية">
-                    <h3>باقة المشاهير</h3>
-                    <ul>
-                        <li><p>5,000 متابع</p></li>
-                        <li><p>20,000 مشاهدة</p></li>
-                        <li><p>5,000 لايك</p></li>
-                        <li><p>حسابات عربية و خليجية</p></li>
-                    </ul>
-                    <div class="price">KD 12</div>
-                    <a href="https://wa.me/0096598983566?text=أود%20الاستفسار%20عن%20باقة%20تيك%20توك%20المشاهير" target="_blank" class="whatsapp-button">
-                        اطلب عبر واتساب
-                    </a>
-                </div>
-
-                <div class="package-card">
-                    <img src="/boostlykw/7_20250627_185555_0006.PNG" alt="باقة تيك توك الانتشار الأقوى من BOOSTTLY: مليون مشاهدة، 10 آلاف لايك من حسابات عربية وخليجية">
-                    <h3>باقة الانتشار الأقوى</h3>
-                    <ul>
-                        <li><p>1,000,000 مشاهدة</p></li>
-                        <li><p>10,000 لايك</p></li>
-                        <li><p>حسابات عربية و خليجية</p></li>
-                    </ul>
-                    <div class="price">KD 10</div>
-                    <a href="https://wa.me/0096598983566?text=أود%20الاستفسار%20عن%20باقة%20تيك%20توك%20الانتشار%20الأقوى" target="_blank" class="whatsapp-button">
-                        اطلب عبر واتساب
-                    </a>
-                </div>
-
-                <div class="package-card">
-                    <img src="/boostlykw/8_20250627_185555_0007.PNG" alt="باقة تيك توك المليونية من BOOSTTLY: مليون مشاهدة، 10 آلاف لايك، 10 آلاف متابع من حسابات عربية وخليجية">
-                    <h3>الباقة المليونية</h3>
-                    <ul>
-                        <li><p>1,000,000 مشاهدة</p></li>
-                        <li><p>10,000 لايك</p></li>
-                        <li><p>10,000 متابع</p></li>
-                        <li><p>حسابات عربية و خليجية</p></li>
-                    </ul>
-                    <div class="price">KD 20</div>
-                    <a href="https://wa.me/0096598983566?text=أود%20الاستفسار%20عن%20باقة%20تيك%20توك%20المليونية" target="_blank" class="whatsapp-button">
-                        اطلب عبر واتساب
-                    </a>
-                </div>
-
-                <div class="package-card">
-                    <img src="/boostlykw/9_20250627_185556_0008.PNG" alt="باقة تيك توك من BOOSTTLY: 10 آلاف مشاهدة من حسابات عربية وخليجية في الكويت">
-                    <h3>باقات تيك توك</h3>
-                    <ul>
-                        <li><p>10,000 مشاهدة</p></li>
-                        <li><p>حسابات عربية و خليجية</p></li>
-                    </ul>
-                    <div class="price">KD 10</div>
-                    <a href="https://wa.me/0096598983566?text=أود%20الاستفسار%20عن%20باقة%2010%20آلاف%20مشاهدة%20تيك%20توك" target="_blank" class="whatsapp-button">
-                        اطلب عبر واتساب
-                    </a>
-                </div>
-
-                <h3 class="platform-category-title" id="youtube-packages-section">باقات يوتيوب</h3>
-
-                <div class="package-card">
-                    <img src="/boostlykw/12_20250627_185556_0011.PNG" alt="باقة يوتيوب مشاهدات من BOOSTTLY: 100 ألف مشاهدة حقيقية في الكويت">
-                    <h3>باقة مشاهدات يوتيوب</h3>
-                    <ul>
-                        <li><p>100,000 مشاهدة عالية الجودة</p></li>
-                        <li><p>زيادة ظهور الفيديو</p></li>
-                        <li><p>حسابات عربية وخليجية</p></li>
-                    </ul>
-                    <div class="price">KD 30</div>
-                    <a href="https://wa.me/0096598983566?text=أود%20الاستفسار%20عن%20باقة%20مشاهدات%20يوتيوب" target="_blank" class="whatsapp-button">
-                        اطلب عبر واتساب
-                    </a>
-                </div>
-
-                <div class="package-card">
-                    <img src="/boostlykw/13_20250627_185556_0012.PNG" alt="باقة يوتيوب مشتركين من BOOSTTLY: 1,000 مشترك عربي حقيقي في الكويت">
-                    <h3>باقة مشتركين يوتيوب</h3>
-                    <ul>
-                        <li><p>1,000 مشترك عربي حقيقي</p></li>
-                        <li><p>ضمان الثبات</p></li>
-                        <li><p>دعم على مدار الساعة</p></li>
-                    </ul>
-                    <div class="price">KD 40</div>
-                    <a href="https://wa.me/0096598983566?text=أود%20الاستفسار%20عن%20باقة%20مشتركين%20يوتيوب" target="_blank" class="whatsapp-button">
-                        اطلب عبر واتساب
-                    </a>
-                </div>
-
-                <div class="package-card">
-                    <img src="/boostlykw/14_20250627_185556_0013.PNG" alt="باقة يوتيوب لايكات وتعليقات من BOOSTTLY: 2000 لايك و100 تعليق">
-                    <h3>باقة تفاعل يوتيوب</h3>
-                    <ul>
-                        <li><p>2,000 لايك لتغريداتك</p></li>
-                        <li><p>100 تعليق عربي</p></li>
-                        <li><p>زيادة تفاعل الفيديو</p></li>
-                    </ul>
-                    <div class="price">KD 20</div>
-                    <a href="https://wa.me/0096598983566?text=أود%20الاستفسار%20عن%20باقة%20تفاعل%20يوتيوب" target="_blank" class="whatsapp-button">
-                        اطلب عبر واتساب
-                    </a>
-                </div>
-                
-                <h3 class="platform-category-title" id="x-packages-section">باقات X (تويتر)</h3>
-
-                <div class="package-card">
-                    <img src="/boostlykw/15_20250627_185556_0014.PNG" alt="باقة X (تويتر) متابعين من BOOSTTLY: 5000 متابع عربي وخليجي">
-                    <h3>باقة متابعين X</h3>
-                    <ul>
-                        <li><p>5,000 متابع عربي وخليجي</p></li>
-                        <li><p>زيادة انتشار الحساب</p></li>
-                        <li><p>ضمان الجودة</p></li>
-                    </ul>
-                    <div class="price">KD 25</div>
-                    <a href="https://wa.me/0096598983566?text=أود%20الاستفسار%20عن%20باقة%20متابعين%20X" target="_blank" class="whatsapp-button">
-                        اطلب عبر واتساب
-                    </a>
-                </div>
-
-                <div class="package-card">
-                    <img src="/boostlykw/16_20250627_185556_0015.PNG" alt="باقة X (تويتر) تفاعل من BOOSTTLY: لايكات وإعادة تغريد عربية">
-                    <h3>باقة تفاعل X</h3>
-                    <ul>
-                        <li><p>2,000 لايك لتغريداتك</p></li>
-                        <li><p>1,000 إعادة تغريد</p></li>
-                        <li><p>حسابات عربية متفاعلة</p></li>
-                    </ul>
-                    <div class="price">KD 18</div>
-                    <a href="https://wa.me/0096598983566?text=أود%20الاستفسار%20عن%20باقة%20تفاعل%20X" target="_blank" class="whatsapp-button">
-                        اطلب عبر واتساب
-                    </a>
-                </div>
-
-                <h3 class="platform-category-title" id="snapchat-packages-section">باقات سناب شات</h3>
-
-                <div class="package-card">
-                    <img src="/boostlykw/10_20250627_185556_0009.PNG" alt="باقة سناب شات من BOOSTTLY: 1,000 متابع من حسابات خليجية في الكويت">
-                    <h3>باقات سناب شات</h3>
-                    <ul>
-                        <li><p>1,000 متابع</p></li>
-                        <li><p>حسابات خليجية</p></li>
-                    </ul>
-                    <div class="price">KD 25</div>
-                    <a href="https://wa.me/0096598983566?text=أود%20الاستفسار%20عن%20باقة%20سناب%20شات" target="_blank" class="whatsapp-button">
-                        اطلب عبر واتساب
-                    </a>
-                </div>
-
-                <div class="package-card">
-                    <img src="/boostlykw/11_20250627_185556_0010.PNG" alt="باقة سناب شات إضافية من BOOSTTLY: 500 مشاهدة لقصص سناب شات">
-                    <h3>باقة مشاهدات سناب شات</h3>
-                    <ul>
-                        <li><p>500 مشاهدة قصة سناب شات</p></li>
-                        <li><p>وصول سريع</p></li>
-                        <li><p>حسابات خليجية</p></li>
-                    </ul>
-                    <div class="price">KD 10</div>
-                    <a href="https://wa.me/0096598983566?text=أود%20الاستفسار%20عن%20باقة%20مشاهدات%20سناب%20شات" target="_blank" class="whatsapp-button">
-                        اطلب عبر واتساب
-                    </a>
-                </div>
-
-                <h3 class="platform-category-title" id="other-packages-section">باقات أخرى</h3>
-
-                <p style="text-align: center; color: var(--secondary-color);">لا توجد باقات أخرى حالياً. يرجى تصفح الباقات أعلاه.</p>
-
-            </div>
-        </section>
-
-        <section id="articles">
-            <h2>مقالاتنا</h2>
-            <div class="articles-grid">
-                <div class="article-card">
-                    <h3>كيف تختار أفضل باقة سوشيال ميديا لعملك؟</h3>
-                    <p>نصائح وإرشادات لاختيار الباقة المناسبة التي تلبي احتياجاتك وأهدافك التسويقية على منصات التواصل الاجتماعي المختلفة.</p>
-                    <a href="javascript:void(0);" class="read-more-link">اقرأ المزيد</a> 
-                </div>
-
-                <div class="article-card">
-                    <h3>أهمية المتابعين الحقيقيين في بناء علامتك التجارية</h3>
-                    <p>اكتشف لماذا يعتبر الحصول على متابعين حقيقيين من جمهورك المستهدف هو المفتاح لنجاح استراتيجيتك التسويقية.</p>
-                    <a href="javascript:void(0);" class="read-more-link">اقرأ المزيد</a>
-                </div>
-
-                <div class="article-card">
-                    <h3>زيادة التفاعل على انستغرام: استراتيجيات مجربة</h3>
-                    <p>تعلم أفضل الممارسات لزيادة الإعجابات والتعليقات والمشاركات على منشوراتك في انستغرام.</p>
-                    <a href="javascript:void(0);" class="read-more-link">اقرأ المزيد</a>
-                </div>
-                
-                <div class="article-card">
-                    <h3>التسويق عبر تيك توك: دليل المبتدئين</h3>
-                    <p>كل ما تحتاج معرفته للبدء في التسويق الفعال على منصة تيك توك سريعة النمو.</p>
-                    <a href="javascript:void(0);" class="read-more-link">اقرأ المزيد</a>
-                </div>
-
-                <div class="package-card">
-                    <h3>كيف تحمي حساباتك على السوشيال ميديا من الاختراق؟</h3>
-                    <p>نصائح أمنية أساسية للحفاظ على أمان حساباتك الرقمية وتجنب التهديدات الشائعة.</p>
-                    <a href="javascript:void(0);" class="read-more-link">اقرأ المزيد</a>
-                </div>
-
-                <div class="package-card">
-                    <h3>أسرار الوصول إلى الاكسبلور في انستغرام وتيك توك</h3>
-                    <p>استراتيجيات متقدمة لزيادة فرص ظهور محتواك في صفحات الاكسبلور والحصول على انتشار واسع.</p>
-                    <a href="javascript:void(0);" class="read-more-link">اقرأ المزيد</a>
-                </div>
-            </div>
-        </section>
-
-        <section id="testimonials">
-            <h2>ماذا يقول عملاؤنا؟</h2>
-            <div class="testimonials-header">
-                <div class="review-platform">
-                    <i class="fab fa-google fa-2x" style="color: #4285F4;"></i>
-                    <div class="rating">
-                        <span class="stars">
-                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                        </span> 4.7/5
-                    </div>
-                    <p>+127 مراجعة</p>
-                </div>
-                <div class="review-platform">
-                    <i class="fas fa-certificate fa-2x" style="color: #00B67A;"></i>
-                    <div class="rating">
-                        <span class="stars">
-                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                        </div>
-                    <p>+135 مراجعة</p>
-                </div>
-            </div>
-
-            <div class="review-grid">
-                <div class="testimonial-card">
-                    <div class="review-header">
-                        <div class="user-info">
-                            <div class="user-name">**X*** A</div>
-                            <div class="stars">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+    return (
+        <section id="featured-packages" className="py-20 px-4 bg-white/5">
+            <div className="container mx-auto">
+                <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true }} className="text-center mb-12">
+                    <h2 className="text-4xl lg:text-5xl font-bold mb-6"><span className="gradient-text">الباقات الأكثر طلباً</span></h2>
+                    <p className="text-xl text-gray-200 max-w-3xl mx-auto">ابدأ فوراً مع باقاتنا الأكثر شعبية وفعالية في الكويت.</p>
+                </motion.div>
+                <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                    {featuredPackages.map((plan, index) => (
+                        <motion.div key={index} initial={{ opacity: 0, y: 50, scale: 0.9 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.5, delay: index * 0.1 }} viewport={{ once: true }} className="pricing-card-v2 group flex flex-col">
+                            <div className="relative mb-4"><img src={plan.image} alt={plan.name} className="rounded-lg w-full h-auto transition-transform duration-300 group-hover:scale-105" /></div>
+                            <div className="p-4 text-center flex flex-col flex-grow">
+                                <h3 className="text-xl font-bold text-white mb-2">{plan.name} ({plan.platform})</h3>
+                                <p className="text-2xl font-bold gradient-text mb-4">{plan.price}</p>
+                                <div className="mt-auto space-y-2">
+                                    <Button onClick={() => handlePlanSelect(plan.platform, plan.name, plan.price)} className="w-full btn-primary flex items-center gap-2">
+                                        <WhatsappIcon className="h-5 w-5" />
+                                        اطلب عبر واتساب
+                                    </Button>
+                                    <Button onClick={() => handleFreeTrial(plan.platform, plan.name)} variant="outline" className="w-full btn-secondary flex items-center gap-2">
+                                        <Gift size={16} /> اطلب تجربة مجانية
+                                    </Button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="user-avatar">
-                            <i class="fas fa-user-circle"></i>
-                        </div>
-                    </div>
-                    <p class="review-text">أنا راضٍ جداً بالنتائج التي رأيتها في هذه الشركة. أوصي بها لجميع أصدقائي! الخدمة لا مثيل لها.</p>
-                    <div class="platform-info">تمت كتابة هذه المراجعة من: Google <i class="fab fa-google"></i></div>
-                </div>
-
-                <div class="testimonial-card">
-                    <div class="review-header">
-                        <div class="user-info">
-                            <div class="user-name">**C*** C</div>
-                            <div class="stars">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                            </div>
-                        </div>
-                        <div class="user-avatar">
-                            <i class="fas fa-user-circle"></i>
-                        </div>
-                    </div>
-                    <p class="review-text">خدمات رائعة. كل ما أقوله هو أن 2000 متابع لسنة للتو كان على وعد، ولكن وصلتني أكثر من 2200 متابع. أحببت حقاً خدماتهم. وجدت موفري الخدمة الرقميين المفضلين لدي. أوصي بشدة!</p>
-                    <div class="platform-info">تمت كتابة هذه المراجعة من: Trustpilot <i class="fas fa-certificate"></i></div>
-                </div>
-
-                <div class="testimonial-card">
-                    <div class="review-header">
-                        <div class="user-info">
-                            <div class="user-name">**D*** B</div>
-                            <div class="stars">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                            </div>
-                        </div>
-                        <div class="user-avatar">
-                            <i class="fas fa-user-circle"></i>
-                        </div>
-                    </div>
-                    <p class="review-text">فريق كبير. لا أستطيع وصف حماسي بكلمات! أحببت أن أرى ما تقدمونه. خدمة عملاء رائعة ودائماً متعاونون معي. فريق ممتاز، سأستخدم خدماتهم كثيراً!</p>
-                    <div class="platform-info">تمت كتابة هذه المراجعة من: Google <i class="fab fa-google"></i></div>
-                </div>
-
-                <div class="testimonial-card">
-                    <div class="review-header">
-                        <div class="user-info">
-                            <div class="user-name">**M*** A</div>
-                            <div class="stars">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                            </div>
-                        </div>
-                        <div class="user-avatar">
-                            <i class="fas fa-user-circle"></i>
-                        </div>
-                    </div>
-                    <p class="review-text">خدمة ودعم ممتازين. لقد زاد وصولي على منصات التواصل الاجتماعي بنسبة 750% بعد أن بدأت بزيادة المتابعين. دائمًا أجد أي زيادة متوقعة في المبيعات والزيارات. أنا أوصي بهذه الشركة، لذا سأستخدمها. شكراً جزيلاً لكم على كل ما تفعلونه لي!</p>
-                    <div class="platform-info">تمت كتابة هذه المراجعة من: Trustpilot <i class="fas fa-certificate"></i></div>
+                        </motion.div>
+                    ))}
                 </div>
             </div>
         </section>
+    );
+};
 
 
-        <section id="about-us">
-            <h2>من نحن</h2>
-            <p>في BOOSTTLY، نحن متخصصون في تقديم حلول متكاملة لخدمات SMM لتعزيز تواجدك الرقمي على جميع منصات التواصل الاجتماعي. سواء كنت تسعى لإدارة شاملة لحساباتك، أو زيادة سريعة وفعالة للمتابعين، المشاهدات، والإعجابات، فإننا هنا لمساعدتك.</p>
-            <p>نؤمن بأن النجاح في عالم السوشيال ميديا يتطلب فهمًا عميقًا للجمهور، وتصميم محتوى جذاب، ومتابعة مستمرة للأداء. لذلك، نقدم باقات متنوعة تلبي كافة الاحتياجات، بدءًا من إدارة المحتوى وصولاً إلى الحملات الإعلانية المستهدفة، مع التركيز على توفير **حسابات وتفاعلات عربية وخليجية حقيقية** لضمان أعلى جودة وملاءمة لجمهورك المستهدف.</p>
-        </section>
+const Services = () => {
+    const services = [
+        { icon: Instagram, name: 'Instagram', description: 'متابعين، لايكات، مشاهدات، تعليقات', color: 'from-[#8851a5] to-[#e462a2]', shadowColor: '#e462a2' },
+        { icon: TikTokIcon, name: 'TikTok', description: 'متابعين، لايكات، مشاهدات، مشاركات', color: 'from-gray-700 to-gray-900', shadowColor: '#4b5563' },
+        { icon: SnapchatIcon, name: 'Snapchat', description: 'مشاهدات، متابعين، فلاتر، إعلانات', color: 'from-[#f69980] to-yellow-500', shadowColor: '#f69980' },
+        { icon: Facebook, name: 'Facebook', description: 'صفحات، مجموعات، لايكات، مشاركات', color: 'from-blue-500 to-blue-700', shadowColor: '#3b82f6' },
+        { icon: Youtube, name: 'YouTube', description: 'مشتركين، مشاهدات، لايكات، تعليقات', color: 'from-red-500 to-red-700', shadowColor: '#ef4444' },
+        { icon: Twitter, name: 'Twitter', description: 'متابعين، لايكات، ريتويت، تعليقات', color: 'from-sky-400 to-sky-600', shadowColor: '#38bdf8' },
+        { icon: MessageCircle, name: 'Telegram', description: 'أعضاء، مشاهدات، تفاعل، قنوات', color: 'from-cyan-400 to-blue-500', shadowColor: '#22d3ee' },
+        { icon: Users, name: 'خدمات أخرى', description: 'خدمات مخصصة لمنصات أخرى حسب الطلب', color: 'from-gray-400 to-gray-600', shadowColor: '#9ca3af' }
+    ];
 
-        <section id="contact-us">
-            <h2>تواصل معنا</h2>
-            <p style="text-align: center;">نحن هنا للإجابة على جميع استفساراتك وتقديم المساعدة. لا تتردد في التواصل معنا عبر واتساب:</p>
-            <p style="text-align: center;">
-                <a href="https://wa.me/0096598983566?text=مرحباً،%20لدي%20استفسار%20عن%20خدماتكم." target="_blank" class="whatsapp-button">
-                    تواصل معنا عبر واتساب الآن
-                </a>
-            </p>
-        </section>
-    </main>
-
-    <a href="https://wa.me/0096598983566?text=مرحباً،%20لدي%20استفسار." target="_blank" class="floating-whatsapp">
-        <i class="fab fa-whatsapp"></i> </a>
-
-    <footer>
-        <p>&copy; 2025 جميع الحقوق محفوظة لـ BOOSTTLY</p>
-        <div class="social-icons">
-            <a href="https://www.instagram.com/boostly_kw/?utm_source=ig_web_button_share_sheet" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="https://www.tiktok.com/@boostly_kw?_t=ZS-8xXvkGcSE1B&_r=1" target="_blank"><i class="fab fa-tiktok"></i></a>
-            <a href="https://snapchat.com/t/Q9jmGZ7A" target="_blank"><i class="fab fa-snapchat-ghost"></i></a>
+    return (
+        <section id="services" className="py-20 px-4">
+            <div className="container mx-auto">
+                <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true }} className="text-center mb-16">
+                    <h2 className="text-4xl lg:text-5xl font-bold mb-6"><span className="gradient-text">خدماتنا</span> المتميزة</h2>
+                    <p className="text-xl text-gray-200 max-w-3xl mx-auto">نقدم خدمات شاملة لجميع منصات التواصل الاجتماعي بجودة عالية وأسعار منافسة</p>
+                </motion.div>
+                <div className="grid md:grid-cols-2 gap-8">
+                    {services.map((service, index) => (
+                        <motion.div key={service.name} initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: index * 0.1 }} viewport={{ once: true }} className="service-card group flex flex-col p-8 rounded-2xl">
+                             <Icon3D color={service.shadowColor}>
+                                <service.icon className="h-10 w-10 text-white" />
+                            </Icon3D>
+                            <h3 className="text-2xl font-bold mt-4 mb-3 text-white">{service.name}</h3>
+                            <p className="text-gray-300 mb-6 flex-grow">{service.description}</p>
+                            <Button onClick={() => handleScroll('pricing')} className="w-full btn-primary mt-auto">اكتشف الباقات</Button>
+                        </motion.div>
+                    ))}
+                </div>
             </div>
-    </footer>
-</body>
-</html>
+        </section>
+    );
+};
+
+const Pricing = () => {
+    const pricingData = {
+        instagram: [
+            { name: '10,000 متابع', price: '8 د.ك', image: 'https://storage.googleapis.com/hostinger-horizons-assets-prod/0c66925f-f5b2-40eb-b414-4ab75f1d1af6/d7576c6886c0904bfe01650589647c1f.png' },
+            { name: '1,000 مشاهدات لايف', price: '5 د.ك', image: 'https://storage.googleapis.com/hostinger-horizons-assets-prod/0c66925f-f5b2-40eb-b414-4ab75f1d1af6/81d5d20bea04d26736a5b6a4f59a4ed1.png' }
+        ],
+        tiktok: [
+            { name: 'باقة المشاهير', price: '12 د.ك', image: 'https://storage.googleapis.com/hostinger-horizons-assets-prod/0c66925f-f5b2-40eb-b414-4ab75f1d1af6/d95e097b400a52c548b0ffe01b834270.png' },
+            { name: '10,000 متابع', price: '7 د.ك', image: 'https://storage.googleapis.com/hostinger-horizons-assets-prod/0c66925f-f5b2-40eb-b414-4ab75f1d1af6/927ace3ba71bb1834e38bdbb26e26d02.png' },
+            { name: 'الباقة المليونية', price: '20 د.ك', image: 'https://storage.googleapis.com/hostinger-horizons-assets-prod/0c66925f-f5b2-40eb-b414-4ab75f1d1af6/3ba90e2de808a0b0891601224815fc75.png' },
+            { name: 'باقة الانتشار الاقوى', price: '10 د.ك', image: 'https://storage.googleapis.com/hostinger-horizons-assets-prod/0c66925f-f5b2-40eb-b414-4ab75f1d1af6/f5e6ac39ac1a9e9fb15df08e2c2cbf72.png' },
+            { name: '10,000 مشاهدات لايف', price: '10 د.ك', image: 'https://storage.googleapis.com/hostinger-horizons-assets-prod/0c66925f-f5b2-40eb-b414-4ab75f1d1af6/f8cf58275066420ac851be45ed2c4ae5.png' }
+        ],
+        snapchat: [
+            { name: '1,000 متابع', price: '25 د.ك', image: 'https://storage.googleapis.com/hostinger-horizons-assets-prod/0c66925f-f5b2-40eb-b414-4ab75f1d1af6/2a68258ab968489ac1991f10aea39919.png' },
+            { name: '1,000 لايك', price: '7 د.ك', image: 'https://storage.googleapis.com/hostinger-horizons-assets-prod/0c66925f-f5b2-40eb-b414-4ab75f1d1af6/f92c6aaeab45ac4db76a9fb5b9abd578.png' }
+        ],
+        youtube: [
+            { name: '1,000 مشترك', price: '12 د.ك', image: 'https://storage.googleapis.com/hostinger-horizons-assets-prod/0c66925f-f5b2-40eb-b414-4ab75f1d1af6/616a461c2284c9c6a48ecc11c2e9edc0.png' },
+            { name: '4,000 ساعة مشاهدة', price: '30 د.ك', image: 'https://storage.googleapis.com/hostinger-horizons-assets-prod/0c66925f-f5b2-40eb-b414-4ab75f1d1af6/616a461c2284c9c6a48ecc11c2e9edc0.png' }
+        ],
+        x: [{ name: '10,000 لايك', price: '6 د.ك', image: 'https://storage.googleapis.com/hostinger-horizons-assets-prod/0c66925f-f5b2-40eb-b414-4ab75f1d1af6/f7fe0f047b4fab806ab62708b9902281.png' }]
+    };
+    const platformIcons = { instagram: <Instagram className="h-5 w-5" />, tiktok: <TikTokIcon className="h-5 w-5" />, snapchat: <SnapchatIcon className="h-5 w-5" />, youtube: <Youtube className="h-5 w-5" />, x: <Twitter className="h-5 w-5" /> };
+    
+    const handlePlanSelect = (platform, planName, price) => {
+        const message = أهلاً Boostly،\n\nأود طلب الباقة التالية:\n- المنصة: *${platform}*\n- الباقة: *${planName}*\n- السعر: *${price}*\n\nالرجاء تأكيد الطلب.;
+        const encodedMessage = encodeURIComponent(message);
+        window.open(https://wa.me/96560930205?text=${encodedMessage}, '_blank');
+    };
+
+    const handleFreeTrial = (platform, planName) => {
+        const message = أهلاً Boostly،\n\nأرغب في الحصول على تجربة مجانية للباقة التالية:\n- المنصة: *${platform}*\n- الباقة: *${planName}*\n\nشكرًا لكم.;
+        const encodedMessage = encodeURIComponent(message);
+        window.open(https://wa.me/96560930205?text=${encodedMessage}, '_blank');
+    };
+
+    const handleCustomPlanSelect = () => {
+        const message = أهلاً Boostly،\n\nأود الاستفسار عن باقة مخصصة. الرجاء تزويدي بالتفاصيل.;
+        const encodedMessage = encodeURIComponent(message);
+        window.open(https://wa.me/96560930205?text=${encodedMessage}, '_blank');
+    };
+
+    return (
+        <section id="pricing" className="py-20 px-4">
+            <div className="container mx-auto">
+                <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true }} className="text-center mb-12">
+                    <h2 className="text-4xl lg:text-5xl font-bold mb-6"><span className="gradient-text">جميع الباقات</span></h2>
+                    <p className="text-xl text-gray-200 max-w-3xl mx-auto">اختر الباقة التي تناسب احتياجاتك وميزانيتك من بين أفضل الخدمات في الكويت.</p>
+                </motion.div>
+                <Tabs defaultValue="instagram" className="w-full">
+                    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }} viewport={{ once: true }}>
+                        <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 mb-12">
+                            {Object.keys(pricingData).map((platform) => (
+                                <TabsTrigger key={platform} value={platform} className="capitalize flex items-center gap-2">{platformIcons[platform]}{platform}</TabsTrigger>
+                            ))}
+                        </TabsList>
+                    </motion.div>
+                    {Object.entries(pricingData).map(([platform, plans]) => (
+                        <TabsContent key={platform} value={platform}>
+                            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                                {plans.map((plan, index) => (
+                                    <motion.div key={index} initial={{ opacity: 0, y: 50, scale: 0.9 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.5, delay: index * 0.1 }} viewport={{ once: true }} className="pricing-card-v2 group flex flex-col">
+                                        <div className="relative mb-4"><img src={plan.image} alt={plan.name} className="rounded-lg w-full h-auto transition-transform duration-300 group-hover:scale-105" /></div>
+                                        <div className="p-4 text-center flex flex-col flex-grow">
+                                            <h3 className="text-xl font-bold text-white mb-2">{plan.name}</h3>
+                                            <p className="text-2xl font-bold gradient-text mb-4">{plan.price}</p>
+                                            <div className="mt-auto space-y-2">
+                                                <Button onClick={() => handlePlanSelect(platform, plan.name, plan.price)} className="w-full btn-primary flex items-center gap-2">
+                                                    <WhatsappIcon className="h-5 w-5" />
+                                                    اطلب عبر واتساب
+                                                </Button>
+                                                <Button onClick={() => handleFreeTrial(platform, plan.name)} variant="outline" className="w-full btn-secondary flex items-center gap-2">
+                                                    <Gift size={16} /> اطلب تجربة مجانية
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </TabsContent>
+                    ))}
+                </Tabs>
+                <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.6 }} viewport={{ once: true }} className="text-center mt-16">
+                    <p className="text-gray-200 mb-4">هل تحتاج باقة مخصصة؟</p>
+                    <Button onClick={handleCustomPlanSelect} variant="outline" className="btn-secondary">تواصل معنا للحصول على عرض مخصص</Button>
+                </motion.div>
+            </div>
+        </section>
+    );
+};
+
+const Features = () => {
+    const features = [
+        { icon: Zap, title: 'الأسرع في الكويت', description: 'نضمن لك بداية تنفيذ الخدمة خلال دقائق من تأكيد الطلب.', color: 'text-[#f69980]', shadowColor: '#f69980' },
+        { icon: Shield, title: 'الأكثر ثقة وأماناً', description: 'حماية كاملة لحسابك مع ضمان عدم الحظر أو النقصان.', color: 'text-green-400', shadowColor: '#4ade80' },
+        { icon: CheckCircle, title: 'حسابات عربية حقيقية', description: 'جميع المتابعين والتفاعلات من حسابات عربية وخليجية حقيقية ونشطة.', color: 'text-[#8851a5]', shadowColor: '#8851a5' },
+        { icon: Users, title: 'الجودة الأفضل', description: 'نقدم متابعين وتفاعلات عالية الجودة لضمان نمو طبيعي ومستدام.', color: 'text-[#e462a2]', shadowColor: '#e462a2' },
+        { icon: HeadphonesIcon, title: 'دعم فني احترافي', description: 'فريق دعم متخصص على مدار الساعة لحل جميع استفساراتك.', color: 'text-[#8851a5]', shadowColor: '#8851a5' },
+        { icon: CreditCard, title: 'دفع آمن وسهل', description: 'طرق دفع متعددة وآمنة لتسهيل عملية الشراء.', color: 'text-sky-400', shadowColor: '#38bdf8' },
+    ];
+    return (
+        <section id="features" className="py-20 px-4">
+            <div className="container mx-auto">
+                <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true }} className="text-center mb-16">
+                    <h2 className="text-4xl lg:text-5xl font-bold mb-6">لماذا <span className="gradient-text">نحن الأفضل في الكويت؟</span></h2>
+                    <p className="text-xl text-gray-200 max-w-3xl mx-auto">نتميز بالجودة والسرعة والأمان في تقديم خدمات السوشال ميديا</p>
+                </motion.div>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {features.map((feature, index) => (
+                        <motion.div key={feature.title} initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: index * 0.1 }} viewport={{ once: true }} className="feature-card text-center group p-8">
+                            <div className="flex justify-center mb-6">
+                                <Icon3D color={feature.shadowColor}>
+                                    <feature.icon className={h-10 w-10 ${feature.color}} />
+                                </Icon3D>
+                            </div>
+                            <h3 className="text-xl font-bold mb-4 text-white">{feature.title}</h3>
+                            <p className="text-gray-300 leading-relaxed">{feature.description}</p>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const Stats = () => {
+    const stats = [
+        { icon: Users, number: '50,000+', label: 'عميل راضي', color: 'text-[#e462a2]', shadowColor: '#e462a2' },
+        { icon: ShoppingCart, number: '500,000+', label: 'طلب مكتمل', color: 'text-green-400', shadowColor: '#4ade80' },
+        { icon: Star, number: '4.9/5', label: 'تقييم العملاء', color: 'text-[#f69980]', shadowColor: '#f69980' },
+        { icon: Globe, number: '100+', label: 'دولة نخدمها', color: 'text-[#8851a5]', shadowColor: '#8851a5' }
+    ];
+    return (
+        <section id="stats" className="py-20 px-4">
+            <div className="container mx-auto">
+                <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true }} className="text-center mb-16">
+                    <h2 className="text-4xl lg:text-5xl font-bold mb-6"><span className="gradient-text">أرقامنا</span> تتحدث عنا</h2>
+                    <p className="text-xl text-gray-200 max-w-3xl mx-auto">إنجازات حقيقية وثقة عملائنا هي أكبر دليل على جودة خدماتنا</p>
+                </motion.div>
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {stats.map((stat, index) => (
+                        <motion.div key={stat.label} initial={{ opacity: 0, scale: 0.5 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: index * 0.1 }} viewport={{ once: true }} className="text-center glass-effect rounded-2xl p-8 hover:bg-white/20 transition-all duration-300">
+                            <div className="flex justify-center mb-4">
+                                <Icon3D color={stat.shadowColor}>
+                                    <stat.icon className={h-8 w-8 ${stat.color}} />
+                                </Icon3D>
+                            </div>
+                            <motion.div className={text-4xl font-bold mb-2 ${stat.color}} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 1, delay: index * 0.2 }} viewport={{ once: true }}>{stat.number}</motion.div>
+                            <div className="text-gray-300 font-medium">{stat.label}</div>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const Testimonials = () => {
+    const testimonials = [
+        { name: 'أحمد العلي', title: 'صاحب متجر إلكتروني', quote: 'شغلكم عجيب وسريع! والله فرَق معاي التفاعل بالانستغرام بأيام. أنصح فيكم وبقوة حق كل أهل الكويت.', rating: 5, avatar: 'https://placehold.co/100x100/e462a2/ffffff?text=AC' },
+        { name: 'فاطمة الكندري', title: 'مؤثرة على تيك توك', quote: 'بالبداية كنت خايفة، بس الصراحة النتائج طلعت خيال! والدعم الفني ما قصّروا معاي كلش، جاوبوا على كل شي. مشكورين وايد.', rating: 5, avatar: 'https://placehold.co/100x100/8851a5/ffffff?text=FK' },
+        { name: 'يوسف المطيري', title: 'مدير تسويق', quote: 'أضبط SMM بالكويت تعاملت وياه. أسعارهم زينة والمتابعين صج جودتهم عالية. صج فادونا بحملتنا الإعلانية ونجحناها.', rating: 5, avatar: 'https://placehold.co/100x100/f69980/ffffff?text=YM' }
+    ];
+    return (
+        <section id="testimonials" className="py-20 px-4">
+            <div className="container mx-auto">
+                <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true }} className="text-center mb-16">
+                    <h2 className="text-4xl lg:text-5xl font-bold mb-6">ماذا يقول <span className="gradient-text">عملاؤنا في الكويت؟</span></h2>
+                    <p className="text-xl text-gray-200 max-w-3xl mx-auto">آراء حقيقية من عملائنا الذين وثقوا بنا لتعزيز تواجدهم الرقمي.</p>
+                </motion.div>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {testimonials.map((testimonial, index) => (
+                        <motion.div key={index} initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: index * 0.2 }} viewport={{ once: true }} className="testimonial-card rounded-2xl p-8 flex flex-col">
+                            <Quote className="w-10 h-10 text-[#8851a5] mb-4" />
+                            <p className="text-gray-300 mb-6 flex-grow">"{testimonial.quote}"</p>
+                            <div className="flex items-center mt-auto">
+                                <img className="w-12 h-12 rounded-full object-cover ml-4" alt={testimonial.name} src={testimonial.avatar} />
+                                <div className="flex-grow">
+                                    <p className="font-bold text-white">{testimonial.name}</p>
+                                    <p className="text-sm text-gray-400">{testimonial.title}</p>
+                                </div>
+                                <div className="flex items-center gap-1 text-sm text-amber-400">
+                                  <span>خمس نجوم</span>
+                                  <Star className="w-5 h-5 text-amber-400 fill-current" />
+                                </div>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const Blog = () => {
+    const articles = [
+        { title: 'كيف تزيد متابعين انستغرام في الكويت؟ 10 استراتيجيات فعالة لعام 2025', excerpt: 'دليل شامل لزيادة المتابعين الحقيقيين والمتفاعلين على حسابك في انستغرام داخل السوق الكويتي.' },
+        { title: 'أسرار نجاح حملات تيك توك الإعلانية في الكويت', excerpt: 'تعلم كيف تستهدف الجمهور الكويتي بشكل صحيح على تيك توك وتحقق أفضل النتائج لحملاتك.' },
+        { title: 'لماذا Boostly هو خيارك الأول لخدمات السوشيال ميديا في الكويت؟', excerpt: 'مقارنة شاملة توضح لماذا نعتبر الأسرع والأكثر ثقة في تقديم خدمات الدعم لمنصات التواصل الاجتماعي.' },
+        { title: '5 أخطاء شائعة تدمر حسابك على انستغرام وكيفية تجنبها', excerpt: 'اكتشف الأخطاء التي قد ترتكبها وتؤثر سلباً على نمو حسابك في الكويت وكيفية تصحيحها.' },
+        { title: 'دليل المبتدئين لاستخدام سناب شات للأعمال في الكويت', excerpt: 'خطوات عملية للشركات الكويتية للاستفادة من منصة سناب شات للوصول إلى عملائها بفعالية.' },
+        { title: 'أفضل أوقات النشر على انستغرام وتيك توك في الكويت لزيادة التفاعل', excerpt: 'تحليل لأفضل الأوقات التي يكون فيها الجمهور الكويتي نشطاً لضمان وصول منشوراتك لأكبر عدد ممكن.' },
+    ];
+    return (
+        <section id="blog" className="py-20 px-4">
+            <div className="container mx-auto">
+                <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true }} className="text-center mb-16">
+                    <h2 className="text-4xl lg:text-5xl font-bold mb-6">من مدونتنا: <span className="gradient-text">نصائح للسوق الكويتي</span></h2>
+                    <p className="text-xl text-gray-200 max-w-3xl mx-auto">مقالات متخصصة لمساعدتك على النجاح في عالم التسويق الرقمي في الكويت.</p>
+                </motion.div>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {articles.map((article, index) => (
+                        <motion.div key={index} initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: index * 0.1 }} viewport={{ once: true }} className="blog-card rounded-2xl overflow-hidden flex flex-col group">
+                             <div className="p-6 flex flex-col flex-grow">
+                                <h3 className="text-xl font-bold mb-3 text-white flex-grow">{article.title}</h3>
+                                <p className="text-gray-300 mb-6">{article.excerpt}</p>
+                                <Button onClick={() => toast({ title: '🚧 المقال الكامل قيد الإعداد!' })} className="btn-secondary mt-auto">اقرأ المزيد <ArrowLeft className="mr-2 h-4 w-4" /></Button>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const Footer = () => {
+    const socialLinks = [
+        { icon: WhatsappIcon, name: 'whatsapp', url: 'https://wa.me/96560930205' },
+        { icon: Instagram, name: 'instagram', url: 'https://www.instagram.com/boostly_kw?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==' },
+        { icon: TikTokIcon, name: 'tiktok', url: 'https://www.tiktok.com/@boostly_kw?_t=ZS-8xXvkGcSE1B&_r=1' },
+    ];
+    const navLinks = [{ name: 'الرئيسية', id: 'hero' }, { name: 'الأسعار', id: 'pricing' }, { name: 'الخدمات', id: 'services' }, { name: 'آراء العملاء', id: 'testimonials' }, { name: 'المدونة', id: 'blog' }, { name: 'اتصل بنا', id: 'contact' }];
+    const policyLinks = ['سياسة الخصوصية', 'شروط الاستخدام', 'سياسة الاسترداد'];
+
+    return (
+        <footer id="contact" className="bg-black/40 py-16 px-4">
+            <div className="container mx-auto">
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true }}>
+                        <div className="flex items-center mb-6"><img src="https://storage.googleapis.com/hostinger-horizons-assets-prod/0c66925f-f5b2-40eb-b414-4ab75f1d1af6/c075c580cb355c5921e07d83b1d6d21e.png" alt="Boostly Logo" className="h-14" /></div>
+                        <p className="text-gray-300 mb-6 leading-relaxed">Boostly: منصة رائدة في تقديم خدمات السوشال ميديا عالية الجودة في الكويت بأسعار منافسة وخدمة عملاء متميزة.</p>
+                        <div className="flex space-x-4 space-x-reverse">
+                            {socialLinks.map((social) => (
+                                <a key={social.name} href={social.url} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors duration-300">
+                                    <social.icon className="h-5 w-5 text-[#8851a5]" />
+                                </a>
+                            ))}
+                        </div>
+                    </motion.div>
+                    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.1 }} viewport={{ once: true }}>
+                        <span className="text-xl font-bold text-white mb-6 block">روابط سريعة</span>
+                        <ul className="space-y-3">
+                            {navLinks.map((link) => (<li key={link.id}><button onClick={() => handleScroll(link.id)} className="text-gray-300 hover:text-[#e462a2] transition-colors duration-300">{link.name}</button></li>))}
+                        </ul>
+                    </motion.div>
+                    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }} viewport={{ once: true }}>
+                        <span className="text-xl font-bold text-white mb-6 block">خدماتنا</span>
+                        <ul className="space-y-3">
+                            {['Instagram', 'TikTok', 'Snapchat', 'Facebook', 'YouTube', 'Twitter'].map((service) => (<li key={service}><button onClick={() => handleScroll('services')} className="text-gray-300 hover:text-[#e462a2] transition-colors duration-300">{service}</button></li>))}
+                        </ul>
+                    </motion.div>
+                    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }} viewport={{ once: true }}>
+                        <span className="text-xl font-bold text-white mb-6 block">تواصل معنا</span>
+                        <div className="space-y-4">
+                            <div className="flex items-center space-x-3 space-x-reverse"><Mail className="h-5 w-5 text-[#8851a5]" /><span className="text-gray-300">info@boostly.com.kw</span></div>
+                            <div className="flex items-center space-x-3 space-x-reverse"><Phone className="h-5 w-5 text-[#8851a5]" /><span className="text-gray-300">+965 60930205</span></div>
+                            <div className="flex items-center space-x-3 space-x-reverse"><MapPin className="h-5 w-5 text-[#8851a5]" /><span className="text-gray-300">مدينة الكويت، الكويت</span></div>
+                        </div>
+                    </motion.div>
+                </div>
+                <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.4 }} viewport={{ once: true }} className="border-t border-white/20 pt-8">
+                    <div className="flex flex-col md:flex-row justify-between items-center">
+                        <p className="text-gray-400 mb-4 md:mb-0">© 2025 Boostly. جميع الحقوق محفوظة.</p>
+                        <div className="flex space-x-6 space-x-reverse">
+                            {policyLinks.map((link) => (<button key={link} onClick={() => toast({ title: '🚧 سيتم إضافة هذه الصفحة قريباً!' })} className="text-gray-400 hover:text-[#e462a2] transition-colors duration-300 text-sm">{link}</button>))}
+                        </div>
+                    </div>
+                </motion.div>
+            </div>
+        </footer>
+    );
+};
+
+
+// --- Main App Component ---
+
+export default function App() {
+  return (
+    <>
+        <style>{
+        :root {
+            --bg-color: #170e39;
+            --color-purple: #8851a5;
+            --color-pink: #e462a2;
+            --color-orange: #f69980;
+        }
+        body {
+            background-color: var(--bg-color);
+        }
+        .bg-main {
+            background-color: var(--bg-color);
+        }
+        .gradient-text {
+            background-image: linear-gradient(to right, var(--color-purple), var(--color-pink), var(--color-orange));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .btn-primary {
+            background-image: linear-gradient(to right, var(--color-purple) 0%, var(--color-pink) 50%, var(--color-orange) 100%);
+            background-size: 200% auto;
+            color: white;
+            border: none;
+            transition: background-position 0.5s;
+        }
+        .btn-primary:hover {
+            background-position: right center;
+        }
+        .btn-secondary {
+            border-color: var(--color-purple);
+            color: var(--color-purple);
+            background-color: transparent;
+        }
+        .btn-secondary:hover {
+            background-color: var(--color-purple);
+            color: white;
+        }
+        .glass-effect {
+            background: rgba(23, 14, 57, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .testimonial-card, .blog-card, .service-card, .feature-card, .pricing-card-v2 {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        .icon-3d-wrapper {
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
+        }
+        .icon-3d-wrapper > svg {
+            filter: drop-shadow(0 1px 1px var(--icon-color));
+        }
+        }</style>
+        <div className="min-h-screen bg-main text-white font-['Cairo']">
+        <Header />
+        <main>
+            <Hero />
+            <FeaturedPackages />
+            <Features />
+            <Services />
+            <Pricing />
+            <Stats />
+            <Testimonials />
+            <Blog />
+        </main>
+        <Footer />
+        <Toaster />
+        </div>
+    </>
+  );
+}
